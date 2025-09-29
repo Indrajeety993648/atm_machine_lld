@@ -23,20 +23,33 @@ public class KeypadDemo {
         System.out.println("3. Testing ATM with Different Keypads:");
         System.out.println("=".repeat(45));
 
-        // ATM with Physical Keypad
-        System.out.println("\nATM with Physical Keypad:");
-        ATM atmPhysical = new ATM(new PhysicalKeypad());
+        // ATM with Physical Keypad using Builder Pattern
+        System.out.println("\nATM with Physical Keypad (Builder Pattern):");
+        ATM atmPhysical = new ATMBuilder()
+                .withKeypad(new PhysicalKeypad())
+                .build();
         Card card = new Card("1234567890123456", "John Doe", "12/25", "ABC Bank");
 
         atmPhysical.insertCard(card);
         atmPhysical.enterPin("1234");
 
-        // ATM with Digital Keypad
-        System.out.println("\nATM with Digital Keypad:");
-        ATM atmDigital = new ATM(new DigitalKeypad());
+        // ATM with Digital Keypad using Factory Pattern
+        System.out.println("\nATM with Digital Keypad (Factory Pattern):");
+        ATM atmDigital = ATMFactory.createModernATM();
 
         atmDigital.insertCard(card);
         atmDigital.enterPin("1234");
+
+        // ATM with Custom Keypad using Dependency Injection
+        System.out.println("\nATM with Custom Keypad (Dependency Injection):");
+        Keypad customKeypad = new DigitalKeypad();
+        ATM atmCustom = new ATMBuilder()
+                .withKeypad(customKeypad)
+                .withDispenseStrategy(new MinimumNotesStrategy())
+                .build();
+
+        atmCustom.insertCard(card);
+        atmCustom.enterPin("1234");
 
         System.out.println("\n=== Keypad Interface Benefits ===");
         System.out.println("✅ Hardware abstraction");

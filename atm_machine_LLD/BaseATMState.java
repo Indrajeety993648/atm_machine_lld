@@ -6,7 +6,8 @@ public abstract class BaseATMState implements ATMState {
     protected StateValidator stateValidator;
 
     public BaseATMState() {
-        this.transitionManager = new DefaultStateTransitionManager();
+        // Don't initialize transition manager here to avoid circular dependency
+        this.transitionManager = null; // Will be lazily initialized
         this.stateValidator = new DefaultStateValidator();
     }
 
@@ -23,6 +24,10 @@ public abstract class BaseATMState implements ATMState {
     }
 
     protected void transitionToState(ATM atm, String event) {
+        // Lazy initialization to avoid circular dependency
+        if (transitionManager == null) {
+            transitionManager = new DefaultStateTransitionManager();
+        }
         String currentStateName = getStateName();
         ATMState nextState = transitionManager.getNextState(currentStateName, event);
         if (nextState != null) {

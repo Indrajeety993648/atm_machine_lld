@@ -2,22 +2,45 @@ package atm_machine_LLD;
 
 public class Main {
     public static void main(String[] args) {
-        // Create ATM instance
-        ATM atm = new ATM();
+        System.out.println("=== ATM Machine Simulation ===");
+        System.out.println("Demonstrating different ATM creation approaches...\n");
 
         // Create a sample card
         Card card = new Card("1234567890123456", "John Doe", "12/25", "ABC Bank");
 
-        System.out.println("=== ATM Machine Simulation ===");
-        System.out.println("ATM is ready for use...\n");
+        // Method 1: Using Factory Pattern
+        System.out.println("1. Creating Standard ATM using Factory Pattern:");
+        ATM standardATM = ATMFactory.createStandardATM();
+        demonstrateATMOperations(standardATM, card, "Standard ATM");
 
-        // Simulate ATM operations
-        demonstrateATMOperations(atm, card);
+        System.out.println("\n" + "=".repeat(70));
+
+        // Method 2: Using Builder Pattern
+        System.out.println("\n2. Creating Modern ATM using Builder Pattern:");
+        ATM modernATM = new ATMBuilder()
+                .withKeypad(new DigitalKeypad())
+                .withDispenseStrategy(new MinimumNotesStrategy())
+                .build();
+        demonstrateATMOperations(modernATM, card, "Modern ATM");
+
+        System.out.println("\n" + "=".repeat(70));
+
+        // Method 3: Using Dependency Injection
+        System.out.println("\n3. Creating ATM with Dependency Injection:");
+        CardReader cardReader = new CardReader();
+        PinEntry pinEntry = new PinEntry(new PhysicalKeypad());
+        CashDispenser dispenser = new CashDispenser(new MinimumNotesStrategy());
+        Printer printer = new Printer();
+        BankConnector bankConnector = new BankConnector();
+
+        ATM injectedATM = new ATM(cardReader, pinEntry, dispenser, printer, bankConnector, new IdleState());
+        demonstrateATMOperations(injectedATM, card, "Dependency Injected ATM");
 
         System.out.println("\n=== ATM Simulation Complete ===");
     }
 
-    private static void demonstrateATMOperations(ATM atm, Card card) {
+    private static void demonstrateATMOperations(ATM atm, Card card, String atmType) {
+        System.out.println("--- " + atmType + " Operations ---");
         try {
             // 1. Insert card
             System.out.println("1. Inserting card...");

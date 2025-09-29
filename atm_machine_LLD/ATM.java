@@ -12,23 +12,46 @@ public class ATM {
     private String currentTransactionType;
     private double currentAmount;
 
-    public ATM() {
-        this.cardReader = new CardReader();
-        this.pinEntry = new PinEntry(new PhysicalKeypad()); // Default to physical keypad
-        this.dispenser = new CashDispenser(new MinimumNotesStrategy()); // Using minimum notes by default
-        this.printer = new Printer();
-        this.bankConnector = new BankConnector();
-        this.state = new IdleState();
+    // Primary constructor with dependency injection
+    public ATM(CardReader cardReader, PinEntry pinEntry, CashDispenser dispenser,
+            Printer printer, BankConnector bankConnector, ATMState initialState) {
+        this.cardReader = cardReader;
+        this.pinEntry = pinEntry;
+        this.dispenser = dispenser;
+        this.printer = printer;
+        this.bankConnector = bankConnector;
+        this.state = initialState;
     }
 
-    // Constructor to specify keypad type
-    public ATM(Keypad keypad) {
-        this.cardReader = new CardReader();
+    // Constructor with default keypad - still uses dependency injection
+    public ATM(CardReader cardReader, CashDispenser dispenser, Printer printer,
+            BankConnector bankConnector, ATMState initialState, Keypad keypad) {
+        this.cardReader = cardReader;
         this.pinEntry = new PinEntry(keypad);
-        this.dispenser = new CashDispenser(new MinimumNotesStrategy());
-        this.printer = new Printer();
-        this.bankConnector = new BankConnector();
-        this.state = new IdleState();
+        this.dispenser = dispenser;
+        this.printer = printer;
+        this.bankConnector = bankConnector;
+        this.state = initialState;
+    }
+
+    // Default constructor for backward compatibility - creates default instances
+    public ATM() {
+        this(new CardReader(),
+                new PinEntry(new PhysicalKeypad()),
+                new CashDispenser(new MinimumNotesStrategy()),
+                new Printer(),
+                new BankConnector(),
+                new IdleState());
+    }
+
+    // Constructor to specify keypad type - improved with dependency injection
+    public ATM(Keypad keypad) {
+        this(new CardReader(),
+                new CashDispenser(new MinimumNotesStrategy()),
+                new Printer(),
+                new BankConnector(),
+                new IdleState(),
+                keypad);
     }
 
     public void setDispenseStrategy(DispenseStrategy strategy) {

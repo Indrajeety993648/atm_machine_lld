@@ -12,11 +12,40 @@ public class DefaultStateTransitionManager implements StateTransitionManager {
 
     private void initializeStates() {
         stateInstances = new HashMap<>();
-        stateInstances.put("IDLE", new IdleState());
+        // Use simple states without BaseATMState to avoid circular dependency
+        stateInstances.put("IDLE", new SimpleIdleState());
         stateInstances.put("CARD_INSERTED", new CardInsertedState());
         stateInstances.put("AUTHENTICATED", new AuthenticatedState());
         stateInstances.put("DISPENSING", new DispensingState());
         stateInstances.put("PRINTING", new PrintingState());
+    }
+
+    // Simple state class to avoid circular dependency
+    private static class SimpleIdleState implements ATMState {
+        @Override
+        public void onCardInserted(ATM atm) {
+            atm.setState(new CardInsertedState());
+        }
+
+        @Override
+        public void onPinEntered(ATM atm, String pin) {
+            System.out.println("Please insert card first.");
+        }
+
+        @Override
+        public void onSelectTransaction(ATM atm, String txType) {
+            System.out.println("Please insert card first.");
+        }
+
+        @Override
+        public void onAmountEntered(ATM atm, double amount) {
+            System.out.println("Please insert card first.");
+        }
+
+        @Override
+        public void onCancel(ATM atm) {
+            // Already in idle state, do nothing
+        }
     }
 
     @Override

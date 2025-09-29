@@ -1,52 +1,35 @@
 package atm_machine_LLD;
 
-public class IdleState extends BaseATMState {
+public class IdleState implements ATMState {
 
     public IdleState() {
-        super();
-    }
-
-    public IdleState(StateTransitionManager transitionManager,
-
-            StateValidator stateValidator) {
-        super(transitionManager, stateValidator);
+        // Simple constructor - no circular dependencies
     }
 
     @Override
     public void onCardInserted(ATM atm) {
-        if (stateValidator.isValidAction(getStateName(), "CARD_INSERTED")) {
-            transitionToState(atm, "CARD_INSERTED");
-        } else {
-            handleInvalidAction(atm, "CARD_INSERTED");
-        }
+        System.out.println("Card insertion processing...");
+        atm.setState(new CardInsertedState());
     }
 
     @Override
     public void onPinEntered(ATM atm, String pin) {
-        handleInvalidAction(atm, "PIN_ENTERED");
+        System.out.println("Please insert card first.");
     }
 
     @Override
     public void onSelectTransaction(ATM atm, String txType) {
-        handleInvalidAction(atm, "SELECT_TRANSACTION");
+        System.out.println("Please insert card first.");
     }
 
     @Override
     public void onAmountEntered(ATM atm, double amount) {
-        handleInvalidAction(atm, "AMOUNT_ENTERED");
+        System.out.println("Please insert card first.");
     }
 
     @Override
     public void onCancel(ATM atm) {
-        if (stateValidator.isValidAction(getStateName(), "CANCEL")) {
-
-        } else {
-            handleInvalidAction(atm, "CANCEL");
-        }
-    }
-
-    @Override
-    protected String getStateName() {
-        return "IDLE";
+        // Already in idle state, do nothing
+        System.out.println("ATM is ready for use.");
     }
 }
