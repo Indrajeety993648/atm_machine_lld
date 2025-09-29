@@ -267,24 +267,6 @@ Ejecting card...
 2. Add state transitions in the state machine
 3. Update the `DefaultStateTransitionManager`
 
-## Known Issues & Improvements
-
-### Current Limitations
-
-- ⚠️ Hard-coded dependencies in ATM constructor
-- ⚠️ Inconsistent state implementation patterns
-- ⚠️ Limited error handling and validation
-- ⚠️ Magic strings used for transaction types
-
-### Planned Improvements
-
-- 🔄 Implement dependency injection
-- 🔄 Add comprehensive error handling
-- 🔄 Use enums for constants
-- 🔄 Add configuration management
-- 🔄 Implement proper logging
-- 🔄 Add unit tests
-
 ## Contributing
 
 1. Fork the repository
